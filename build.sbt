@@ -13,9 +13,12 @@ lazy val marathon = (project in file("marathon"))
   .settings(PublishSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
-      "org.scalactic" %% "scalactic"    % ScalacticVersion,
-      "com.twitter"   %% "finagle-core" % FinagleVersion,
-      "com.twitter"   %% "finagle-http" % FinagleVersion
+      "org.slf4j"      % "slf4j-api"      % "1.7.21",
+      "org.slf4j"      % "slf4j-jdk14"    % "1.7.21" % "test",
+      "org.scalactic" %% "scalactic"      % ScalacticVersion,
+      "com.twitter"   %% "finagle-core"   % FinagleVersion,
+      "com.twitter"   %% "finagle-http"   % FinagleVersion,
+      "org.json4s"    %% "json4s-jackson" % "3.4.1"
     )
   )
 

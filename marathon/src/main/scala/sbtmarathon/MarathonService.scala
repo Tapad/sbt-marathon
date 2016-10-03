@@ -7,6 +7,8 @@ import scala.concurrent.duration.Duration
 import com.twitter.finagle.{Http, Name, Address}
 import com.twitter.finagle.http.{RequestBuilder, Request, Response}
 import com.twitter.io.Buf
+import org.json4s._
+import org.json4s.jackson.JsonMethods._
 import org.scalactic.{Or, Good, Bad}
 
 class MarathonService(url: URL) {
@@ -84,7 +86,8 @@ class MarathonService(url: URL) {
   }
 
   def instanceServiceUrl(applicationId: String): URL = {
-    new URL(url.getProtocol, url.getHost, port, url.getFile + s"/$applicationId")
+    val pathWithoutTrailingSlashes = url.getFile.replaceAll("/+$", "")
+    new URL(url.getProtocol, url.getHost, port, pathWithoutTrailingSlashes + s"/$applicationId")
   }
 
   def instanceGuiUrl(applicationId: String): URL = {
@@ -96,7 +99,12 @@ class MarathonService(url: URL) {
 
 object MarathonService {
 
-  sealed trait Result { def responseString: String }
+  sealed trait Result {
+    implicit val formats = DefaultFormats
+    def responseString: String
+    lazy val responseJson: JValue = parse(responseString)
+    lazy val message: Option[String] = (responseJson \ "message").extractOpt[String]
+  }
   case class Success(responseString: String) extends Result
   case class UserError(responseString: String) extends Result
   case class SystemError(responseString: String) extends Result
