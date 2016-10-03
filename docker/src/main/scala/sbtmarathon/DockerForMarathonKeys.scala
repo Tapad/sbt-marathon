@@ -1,0 +1,4 @@
+package sbtmarathon
+
+object DockerForMarathonKeys {
+}
