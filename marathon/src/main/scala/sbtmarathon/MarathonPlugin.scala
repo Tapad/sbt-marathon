@@ -1,14 +1,17 @@
 package sbtmarathon
 
 import sbt._
-import Keys._
 
 object MarathonPlugin extends AutoPlugin {
 
   object autoImport {
-    val MarathonKeys = sbtmarathon.MarathonKeys
-
+    val MarathonKeys            = sbtmarathon.MarathonKeys
+    val MarathonSettings        = sbtmarathon.MarathonSettings
+    val dockerRegistry          = MarathonKeys.dockerRegistry
     val marathonApplicationId   = MarathonKeys.marathonApplicationId
+    val marathonServiceUrl      = MarathonKeys.marathonServiceUrl
+    val marathonServiceRequest  = MarathonKeys.marathonServiceRequest
+    val marathonService         = MarathonKeys.marathonService
     val marathonServiceStart    = MarathonKeys.marathonServiceStart
     val marathonServiceDestroy  = MarathonKeys.marathonServiceDestroy
     val marathonServiceUpdate   = MarathonKeys.marathonServiceUpdate
@@ -16,5 +19,5 @@ object MarathonPlugin extends AutoPlugin {
     val marathonServiceScale    = MarathonKeys.marathonServiceScale
   }
 
-  override def projectSettings = Seq.empty
+  override def projectSettings = MarathonSettings.projectSettings
 }

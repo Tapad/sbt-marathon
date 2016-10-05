@@ -21,6 +21,7 @@ lazy val marathon = (project in file("marathon"))
       "org.json4s"    %% "json4s-jackson" % "3.4.1"
     )
   )
+  .dependsOn(util)
 
 lazy val docker = (project in file("docker"))
   .settings(PluginSettings: _*)
