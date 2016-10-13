@@ -13,12 +13,12 @@ lazy val marathon = (project in file("marathon"))
   .settings(PublishSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
-      "org.slf4j"      % "slf4j-api"      % "1.7.21",
-      "org.slf4j"      % "slf4j-jdk14"    % "1.7.21" % "test",
-      "org.scalactic" %% "scalactic"      % ScalacticVersion,
-      "com.twitter"   %% "finagle-core"   % FinagleVersion,
-      "com.twitter"   %% "finagle-http"   % FinagleVersion,
-      "org.json4s"    %% "json4s-jackson" % "3.4.1"
+      "org.slf4j"      % "slf4j-api"        % "1.7.21",
+      "org.slf4j"      % "slf4j-jdk14"      % "1.7.21" % "test",
+      "org.scalactic" %% "scalactic"        % ScalacticVersion,
+      "com.twitter"   %% "finagle-core"     % FinagleVersion,
+      "com.twitter"   %% "finagle-http"     % FinagleVersion,
+      "org.json4sbt"  %% "json4sbt-jackson" % "3.4.1"
     )
   )
   .dependsOn(util)
@@ -46,6 +46,8 @@ lazy val templating = (project in file("templating"))
   .settings(PublishSettings: _*)
   .settings(
     name := "sbt-marathon-templating",
+    buildInfoKeys := Seq[BuildInfoKey](version),
+    buildInfoPackage := "sbtmarathon",
     addSbtPlugin("com.typesafe.sbt" % "sbt-twirl" % "1.0.3"),
     sourceDirectories in (Compile, TwirlKeys.compileTemplates) += {
       (resourceDirectory in Compile).value / "templates"
@@ -62,11 +64,12 @@ lazy val templatingUtil = (project in file("templating-util"))
   .settings(CommonSettings: _*)
   .settings(CrossPublishSettings: _*)
   .settings(
+    name := "marathon-templating-util",
     libraryDependencies ++= Seq(
-      "org.scala-lang"     % "scala-reflect"  % scalaVersion.value,
-      "org.slf4j"          % "slf4j-api"      % "1.7.21",
-      "org.json4s"        %% "json4s-jackson" % "3.4.1",
-      "com.typesafe.play" %% "twirl-api"      % "1.1.1" % "provided"
+      "org.scala-lang"     % "scala-reflect"    % scalaVersion.value,
+      "org.slf4j"          % "slf4j-api"        % "1.7.21",
+      "org.json4sbt"      %% "json4sbt-jackson" % "3.4.1",
+      "com.typesafe.play" %% "twirl-api"        % "1.1.1" % "provided"
     )
   )
 
@@ -74,6 +77,7 @@ lazy val util = (project in file("util"))
   .settings(CommonSettings: _*)
   .settings(CrossPublishSettings: _*)
   .settings(
+    name := "marathon-util",
     libraryDependencies := parserCombinators(scalaVersion.value).fold(libraryDependencies.value) {
       libraryDependencies.value :+ _
     }

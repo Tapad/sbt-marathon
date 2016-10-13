@@ -7,8 +7,8 @@ import scala.concurrent.duration.Duration
 import com.twitter.finagle.{Http, Name, Address}
 import com.twitter.finagle.http.{RequestBuilder, Request, Response}
 import com.twitter.io.Buf
-import org.json4s._
-import org.json4s.jackson.JsonMethods._
+import org.json4sbt._
+import org.json4sbt.jackson.JsonMethods._
 import org.scalactic.{Or, Good, Bad}
 
 class MarathonService(url: URL) {

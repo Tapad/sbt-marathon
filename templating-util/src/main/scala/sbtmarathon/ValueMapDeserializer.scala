@@ -1,7 +1,7 @@
 package sbtmarathon
 
-import org.json4s._
-import org.json4s.jackson.Serialization.read
+import org.json4sbt._
+import org.json4sbt.jackson.Serialization.read
 
 case class ValueMap(underlying: Map[String, Any])
 

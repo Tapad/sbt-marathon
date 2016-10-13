@@ -1,7 +1,7 @@
 package sbtmarathon
 
 import scala.reflect.{Manifest, ManifestFactory}
-import org.json4s.{Formats, JValue, JObject, JArray, JString}
+import org.json4sbt.{Formats, JValue, JObject, JArray, JString}
 
 object ManifestSerialization {
 

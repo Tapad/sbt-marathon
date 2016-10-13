@@ -3,9 +3,9 @@ package sbtmarathon
 import scala.reflect.api._
 import scala.reflect.ManifestFactory
 import scala.reflect.runtime.universe._
-import org.json4s._
-import org.json4s.jackson.JsonMethods._
-import org.json4s.jackson.Serialization
+import org.json4sbt._
+import org.json4sbt.jackson.JsonMethods._
+import org.json4sbt.jackson.Serialization
 
 object TemplateDriverSerializer extends Serializer[TemplateDriver] {
 
@@ -33,7 +33,10 @@ object TemplateDriverSerializer extends Serializer[TemplateDriver] {
     instanceType.members.map { symbol =>
       symbol.name.decoded -> symbol
     }.collect {
-      case (name, symbol) if !reservedNames.contains(name) && symbol.isTerm && !symbol.isSynthetic => name -> symbol.asTerm
+      case (name, symbol)
+        if !reservedNames.contains(name)
+        && symbol.isTerm
+        && !symbol.isSynthetic => name -> symbol.asTerm
     }(scala.collection.breakOut)
   }
 

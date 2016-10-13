@@ -3,8 +3,8 @@ package sbtmarathon
 import java.io.File
 import java.nio.file.Path
 import scala.reflect.runtime.universe._
-import org.json4s.DefaultFormats
-import org.json4s.jackson.Serialization
+import org.json4sbt.DefaultFormats
+import org.json4sbt.jackson.Serialization
 import org.slf4j.LoggerFactory
 import play.twirl.api.BufferedContent
 import sbtmarathon.TemplateUtils._
