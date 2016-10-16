@@ -8,8 +8,8 @@ import com.twitter.finagle.http._
 import com.twitter.finagle.http.path._
 import com.twitter.finagle.http.service.RoutingService
 import com.twitter.util.Future
-import org.json4s._
-import org.json4s.jackson.JsonMethods._
+import org.json4sbt._
+import org.json4sbt.jackson.JsonMethods._
 
 case class MockMarathonService() extends Service[Request, Response] {
 
