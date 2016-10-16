@@ -5,7 +5,7 @@ import SubProject._
 lazy val root = (project in file("."))
   .settings(MinimalSettings: _*)
   .settings(NoopPublishSettings: _*)
-  .aggregate(marathon, docker, nativePackager, templating, templatingUtil, util)
+  .aggregate(marathon, templating, templatingUtil, util)
   .enablePlugins(CrossPerProjectPlugin)
 
 lazy val marathon = (project in file("marathon"))
@@ -22,24 +22,6 @@ lazy val marathon = (project in file("marathon"))
     )
   )
   .dependsOn(util)
-
-lazy val docker = (project in file("docker"))
-  .settings(PluginSettings: _*)
-  .settings(PublishSettings: _*)
-  .settings(
-    name := "sbt-docker-for-marathon"
-  )
-  .dependsOn(marathon)
-  .enablePlugins(sbtdocker.DockerPlugin)
-
-lazy val nativePackager = (project in file("native-packager"))
-  .settings(PluginSettings: _*)
-  .settings(PublishSettings: _*)
-  .settings(
-    name := "sbt-native-packager-for-marathon"
-  )
-  .dependsOn(marathon)
-  .enablePlugins(com.typesafe.sbt.packager.docker.DockerPlugin)
 
 lazy val templating = (project in file("templating"))
   .settings(PluginSettings: _*)

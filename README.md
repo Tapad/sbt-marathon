@@ -7,6 +7,8 @@ An [sbt](http://scala-sbt.org) plugin for launching application containers on th
 
 ## Integration with sbt-native-packager
 
+## Marathon `Request.Builder`
+
 ## Templating
 
 ## Tutorial
@@ -15,17 +17,11 @@ An [sbt](http://scala-sbt.org) plugin for launching application containers on th
 
 ### Project structure
 - marathon
-- docker
-- native-packager
 - templating
 - templating-util
 - util
 
 #### marathon
-
-#### docker
-
-#### native-packager
 
 #### templating
 
