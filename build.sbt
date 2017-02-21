@@ -45,7 +45,10 @@ lazy val marathon = (project in file("marathon"))
       "com.twitter"   %% "finagle-core"     % FinagleVersion,
       "com.twitter"   %% "finagle-http"     % FinagleVersion,
       "org.json4sbt"  %% "json4sbt-jackson" % "3.4.1"
-    )
+    ),
+    publishLocal := {
+      (publishLocal.dependsOn(publishLocal in util)).value
+    }
   )
   .dependsOn(util)
 
@@ -63,7 +66,13 @@ lazy val templating = (project in file("templating"))
     TwirlKeys.templateFormats ++= Map(
       "sh"    -> "play.twirl.api.TxtFormat",
       "json"  -> "play.twirl.api.TxtFormat"
-    )
+    ),
+    publishLocal := {
+      (publishLocal.dependsOn(publishLocal in marathon)).value
+    },
+    publishLocal := {
+      (publishLocal.dependsOn(publishLocal in templatingLib)).value
+    }
   )
   .dependsOn(marathon, templatingLib)
   .enablePlugins(BuildInfoPlugin, SbtTwirl)
