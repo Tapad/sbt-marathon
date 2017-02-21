@@ -31,7 +31,7 @@ val PluginSettings = CommonSettings ++ scriptedSettings ++ Seq(
 lazy val root = (project in file("."))
   .settings(BaseSettings: _*)
   .settings(NoopPublishSettings: _*)
-  .aggregate(marathon, templating, templatingUtil, util)
+  .aggregate(marathon, templating, templatingLib, util)
   .enablePlugins(CrossPerProjectPlugin)
 
 lazy val marathon = (project in file("marathon"))
@@ -65,14 +65,14 @@ lazy val templating = (project in file("templating"))
       "json"  -> "play.twirl.api.TxtFormat"
     )
   )
-  .dependsOn(marathon, templatingUtil)
+  .dependsOn(marathon, templatingLib)
   .enablePlugins(BuildInfoPlugin, SbtTwirl)
 
-lazy val templatingUtil = (project in file("templating-util"))
+lazy val templatingLib = (project in file("templating-lib"))
   .settings(CommonSettings: _*)
   .settings(CrossPublishSettings: _*)
   .settings(
-    name := "marathon-templating-util",
+    name := "marathon-templating-lib",
     libraryDependencies ++= Seq(
       "org.scala-lang"     % "scala-reflect"    % scalaVersion.value,
       "org.slf4j"          % "slf4j-api"        % "1.7.21",
