@@ -31,6 +31,7 @@ val PluginSettings = CommonSettings ++ scriptedSettings ++ Seq(
 lazy val root = (project in file("."))
   .settings(BaseSettings: _*)
   .settings(NoopPublishSettings: _*)
+  .settings(ReleaseSettings: _*)
   .aggregate(marathon, templating, templatingLib, util)
   .enablePlugins(CrossPerProjectPlugin)
 

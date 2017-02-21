@@ -1,6 +1,7 @@
 import sbt._
 import sbt.Keys._
 import sbtrelease.ReleasePlugin.autoImport._
+import sbtrelease.ReleaseStateTransformations._
 import Repositories._
 
 object Publishing {
@@ -18,16 +19,30 @@ object Publishing {
   )
 
   val CrossPublishSettings = PublishSettings ++ Seq(
-    crossScalaVersions := Dependencies.SupportedScalaVersions,
-    releaseCrossBuild := true
+    crossScalaVersions := Dependencies.SupportedScalaVersions
   )
 
   /* `publish` performs a no-op */
   val NoopPublishSettings = Seq(
-    releaseCrossBuild := true,
     publish := (),
     publishLocal := (),
     publishArtifact := false,
     publishTo := Some(LocalMaven)
+  )
+
+  val ReleaseSettings = Seq(
+    releaseCrossBuild := true,
+    releaseProcess := Seq[ReleaseStep](
+      checkSnapshotDependencies,
+      inquireVersions,
+      releaseStepCommandAndRemaining("+test"),
+      setReleaseVersion,
+      commitReleaseVersion,
+      tagRelease,
+      releaseStepCommandAndRemaining("+publish"),
+      setNextVersion,
+      commitNextVersion,
+      pushChanges
+    )
   )
 }
