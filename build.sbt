@@ -1,11 +1,38 @@
 import Dependencies._
 import Publishing._
-import SubProject._
+
+/* The base, minimal settings for every project, including the root aggregate project */
+val BaseSettings = Seq(
+  organization := "com.tapad.sbt",
+  scalaVersion := Dependencies.ScalaVersion
+)
+
+/* Common settings for all non-aggregate subprojects */
+val CommonSettings = BaseSettings ++ Seq(
+  scalacOptions ++= Seq("-deprecation", "-language:_"),
+  credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
+  resolvers ++= Seq(
+    Repositories.SonatypeSnapshots,
+    Repositories.MavenCentral,
+    Repositories.LocalMaven
+  ),
+  libraryDependencies ++= Seq(
+    "org.scalatest" %% "scalatest" % Dependencies.ScalaTestVersion % "test"
+  )
+)
+
+val PluginSettings = CommonSettings ++ scriptedSettings ++ Seq(
+  sbtPlugin := true,
+  name := "sbt-" + name.value,
+  scriptedLaunchOpts ++= Seq("-Xmx1024M", "-XX:MaxPermSize=256M", "-Dplugin.version=" + version.value),
+  scriptedBufferLog := false
+)
 
 lazy val root = (project in file("."))
-  .settings(MinimalSettings: _*)
+  .settings(BaseSettings: _*)
   .settings(NoopPublishSettings: _*)
-  .aggregate(marathon, templating, templatingUtil, util)
+  .settings(ReleaseSettings: _*)
+  .aggregate(marathon, templating, templatingLib, util)
   .enablePlugins(CrossPerProjectPlugin)
 
 lazy val marathon = (project in file("marathon"))
@@ -19,7 +46,10 @@ lazy val marathon = (project in file("marathon"))
       "com.twitter"   %% "finagle-core"     % FinagleVersion,
       "com.twitter"   %% "finagle-http"     % FinagleVersion,
       "org.json4sbt"  %% "json4sbt-jackson" % "3.4.1"
-    )
+    ),
+    publishLocal := {
+      (publishLocal.dependsOn(publishLocal in util)).value
+    }
   )
   .dependsOn(util)
 
@@ -37,16 +67,22 @@ lazy val templating = (project in file("templating"))
     TwirlKeys.templateFormats ++= Map(
       "sh"    -> "play.twirl.api.TxtFormat",
       "json"  -> "play.twirl.api.TxtFormat"
-    )
+    ),
+    publishLocal := {
+      (publishLocal.dependsOn(publishLocal in marathon)).value
+    },
+    publishLocal := {
+      (publishLocal.dependsOn(publishLocal in templatingLib)).value
+    }
   )
-  .dependsOn(marathon, templatingUtil)
+  .dependsOn(marathon, templatingLib)
   .enablePlugins(BuildInfoPlugin, SbtTwirl)
 
-lazy val templatingUtil = (project in file("templating-util"))
+lazy val templatingLib = (project in file("templating-lib"))
   .settings(CommonSettings: _*)
   .settings(CrossPublishSettings: _*)
   .settings(
-    name := "marathon-templating-util",
+    name := "marathon-templating-lib",
     libraryDependencies ++= Seq(
       "org.scala-lang"     % "scala-reflect"    % scalaVersion.value,
       "org.slf4j"          % "slf4j-api"        % "1.7.21",

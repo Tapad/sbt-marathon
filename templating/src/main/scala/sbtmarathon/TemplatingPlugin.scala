@@ -65,7 +65,7 @@ object TemplatingPlugin extends AutoPlugin {
     clean := {
       clean.dependsOn(clean in Templating).value
     },
-    libraryDependencies += "com.tapad.sbt" %% "marathon-templating-util" % BuildInfo.version % Templating.name,
+    libraryDependencies += "com.tapad.sbt" %% "marathon-templating-lib" % BuildInfo.version % Templating.name,
     managedClasspath in Templating := {
       val artifactTypes: Set[String] = (classpathTypes in Templating).value
       Classpaths.managedJars(Templating, artifactTypes, update.value)

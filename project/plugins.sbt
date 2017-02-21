@@ -8,7 +8,7 @@ addSbtPlugin("com.eed3si9n" % "sbt-doge" % "0.1.5")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.1.1")
 
-addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.3")
+addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.4")
 
 addSbtPlugin("org.scoverage" %% "sbt-scoverage" % "1.1.0")
 
