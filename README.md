@@ -50,6 +50,17 @@ dockerfile in docker := {
         .entryPoint("java", "-cp", "/app:/app/*", mainClass, "$@")
   }
 }
+
+// build the request that will be used to start and modify your application
+marathonServiceRequest := sbtmarathon.adt.Request.newBuilder()
+  .withId(marathonApplicationId.value)
+  .withContainer(
+    DockerContainer(
+      image = s"${dockerRegistry.value}/${organization.value}/${name.value}:${version.value}",
+      network = "BRIDGE"
+    )
+  )
+  .build()
 ```
 
 Lastly, be sure to enable both sbt-docker and sbt-marathon in your `build.sbt` file:

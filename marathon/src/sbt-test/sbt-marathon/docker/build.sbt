@@ -7,7 +7,7 @@ organization := "com.tapad.sbt-test"
 
 version := "0.1.0"
 
-mainClass in Compile := Some("HelloWord")
+mainClass in Compile := Some("HelloWorld")
 
 dockerRegistry := "localhost:5000"
 
