@@ -13,6 +13,68 @@ addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0-SNAPSHOT")
 ```
 
 ## Integration with sbt-docker
+To use sbt-marathon in conjunction with sbt-docker, add the following to your `./project/plugins.sbt` and `build.sbt` files, respectively:
+
+```
+addSbtPlugin("se.marcuslonnberg" % "sbt-docker" % "1.4.0")
+
+addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0-SNAPSHOT")
+```
+
+```
+// specify the url of your Marathon service endpoint
+marathonServiceUrl := "http://localhost:8080/v2/apps"
+
+// specify the docker registry to which your images will be pushed
+dockerRegistry := "registry.hub.docker.com" // or a host/port pair pointing to your.private.registry:5000
+
+// specify the image name for your application
+imageNames in docker += ImageName(
+  registry = Some(dockerRegistry.value),
+  namespace = Some(organization.value),
+  repository = name.value.toLowerCase,
+  tag = Some(version.value)
+)
+
+// optionally define a mainClass (if necessary for your application's entrypoint)
+mainClass in docker := (mainClass in Compile).value
+
+// build the Dockerfile for your application, using sbt-docker's fluent interface
+dockerfile in docker := {
+  (mainClass in docker).value match {
+    case None => sys.error("A main class is not defined. Please declare a value for the `mainClass` setting.")
+    case Some(mainClass) =>
+      ImmutableDockerfile.empty
+        .from("java")
+        .add((fullClasspath in Compile).value.files, "/app/")
+        .entryPoint("java", "-cp", "/app:/app/*", mainClass, "$@")
+  }
+}
+```
+
+Lastly, be sure to enable both sbt-docker and sbt-marathon in your `build.sbt` file:
+
+```
+enablePlugins(DockerPlugin, MarathonPlugin)
+```
+
+Once configured properly, the typical workflow to deploy your application on Marathon is:
+
+1.  Build and push your image to the docker registry, if not already done
+2.  Generate your Marathon API request
+3.  Execute the request against the running Marathon server
+
+An example workflow, run from an interactive sbt session, is presented below:
+```
+$ sbt
+> dockerBuildAndPush      // build and push image to docker registry
+> marathonServiceStart    // start application on Mesos
+> marathonServiceScale 5  // scale application to 5 instances
+...
+> marathonServiceDestroy  // at some point in the future, destroy your application, shutting down all running instances
+```
+
+For more information, refer to the documentation provided by [sbt-docker](https://github.com/marcuslonnberg/sbt-docker) and the scripted integration test found at [marathon/src/sbt-test/sbt-marathon/docker](marathon/src/sbt-test/sbt-marathon/docker).
 
 ## Integration with sbt-native-packager
 

@@ -1,0 +1,3 @@
+> dockerBuildAndPush
+> marathonServiceStart
+> marathonServiceDestroy
