@@ -4,20 +4,16 @@ import Publishing._
 /* The base, minimal settings for every project, including the root aggregate project */
 val BaseSettings = Seq(
   organization := "com.tapad.sbt",
+  bintrayRepository := "sbt-plugins",
+  licenses += ("BSD New", url("https://opensource.org/licenses/BSD-3-Clause")),
   scalaVersion := Dependencies.ScalaVersion
 )
 
 /* Common settings for all non-aggregate subprojects */
 val CommonSettings = BaseSettings ++ Seq(
   scalacOptions ++= Seq("-deprecation", "-language:_"),
-  credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
-  resolvers ++= Seq(
-    Repositories.SonatypeSnapshots,
-    Repositories.MavenCentral,
-    Repositories.LocalMaven
-  ),
   libraryDependencies ++= Seq(
-    "org.scalatest" %% "scalatest" % Dependencies.ScalaTestVersion % "test"
+    "org.scalatest" %% "scalatest" % ScalaTestVersion % "test"
   )
 )
 
@@ -45,7 +41,7 @@ lazy val marathon = (project in file("marathon"))
       "org.scalactic" %% "scalactic"        % ScalacticVersion,
       "com.twitter"   %% "finagle-core"     % FinagleVersion,
       "com.twitter"   %% "finagle-http"     % FinagleVersion,
-      "org.json4sbt"  %% "json4sbt-jackson" % "3.4.1"
+      "org.json4sbt"  %% "json4sbt-jackson" % Json4sbtVersion
     ),
     publishLocal := {
       (publishLocal.dependsOn(publishLocal in util)).value

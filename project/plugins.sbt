@@ -1,3 +1,5 @@
+addSbtPlugin("me.lessis" % "bintray-sbt" % "0.3.0")
+
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.6.1")
 
 addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.8.2")
