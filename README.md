@@ -12,6 +12,37 @@ Add the following line to `./project/plugins.sbt`. See the [Using plugins](http:
 addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0-SNAPSHOT")
 ```
 
+## Marathon `Request.Builder`
+The sbt-marathon plugin provides a fluent interface to construct Marathon requests for a given application.
+
+When communicating with Marathon's REST API, a JSON payload is required to specify the identity, properties, and constraints of your application.
+
+The `sbtmarathon.adt.Request.Builder` provides a fluent interface for creating these JSON payloads.
+
+You can leverage the `Request.Builder` as follows in your build definition:
+
+```
+import sbtmarathon.adt._
+
+marathonServiceRequest := Request.newBuilder()
+  .withId(marathonApplicationId.value)
+  .withContainer(
+    DockerContainer(
+      image = s"${dockerRegistry.value}/${organization.value}/${name.value}:${version.value}",
+      network = "BRIDGE"
+    )
+    .addPortMapping(containerPort = 8080, hostPort = 0, servicePort = Some(9000), protocol = "tcp")
+    .addVolume(containerPath = "/etc/a", hostPath = "/var/data/a", mode = "RO")
+  )
+  .withCpus(4)
+  .withMem(256)
+  .addEnv("LD_LIBRARY_PATH", "/usr/local/lib/myLib")
+  .addLabel("environment", "staging")
+  .build()
+```
+
+For more information on how to use the `Request.Builder`, please refer to [`sbtmarathon.adt`](marathon/src/main/scala/sbtmarathon/adt/package.scala) and the [`AdtSpec.scala`](marathon/src/test/scala/sbtmarathon/adt/AdtSpec.scala) unit test.
+
 ## Integration with sbt-docker
 To use sbt-marathon in conjunction with sbt-docker, add the following to your `./project/plugins.sbt` and `build.sbt` files, respectively:
 
