@@ -12,7 +12,9 @@ Add the following line to `./project/plugins.sbt`. See the [Using plugins](http:
 addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0-SNAPSHOT")
 ```
 
-## Marathon `Request.Builder`
+## Usage
+
+### Marathon `Request.Builder`
 The sbt-marathon plugin provides a fluent interface to construct Marathon requests for a given application.
 
 When communicating with Marathon's REST API, a JSON payload is required to specify the identity, properties, and constraints of your application.
@@ -43,7 +45,7 @@ marathonServiceRequest := Request.newBuilder()
 
 For more information on how to use the `Request.Builder`, please refer to [`sbtmarathon.adt`](marathon/src/main/scala/sbtmarathon/adt/package.scala) and the [`AdtSpec.scala`](marathon/src/test/scala/sbtmarathon/adt/AdtSpec.scala) unit test.
 
-## Integration with sbt-docker
+### Integration with sbt-docker
 To use sbt-marathon in conjunction with sbt-docker, add the following to your `./project/plugins.sbt` and `build.sbt` files, respectively:
 
 ```
@@ -118,7 +120,7 @@ $ sbt
 
 For more information, refer to the documentation provided by [sbt-docker](https://github.com/marcuslonnberg/sbt-docker) and the scripted integration test found at [marathon/src/sbt-test/sbt-marathon/docker](marathon/src/sbt-test/sbt-marathon/docker).
 
-## Integration with sbt-native-packager
+### Integration with sbt-native-packager
 To use sbt-marathon in conjunction with sbt-native-packager, add the following to your `./project/plugins.sbt` and `build.sbt` files, respectively:
 
 ```
@@ -171,7 +173,7 @@ $ sbt
 
 For more information, refer to the documentation provided by [sbt-native-packager](https://github.com/sbt/sbt-native-packager) and the scripted integration test found at [marathon/src/sbt-test/sbt-marathon/native-packager](marathon/src/sbt-test/sbt-marathon/native-packager).
 
-## Templating
+### Templating
 The [twirl templating engine](https://github.com/playframework/twirl) can be leveraged to help author Marathon requests by using the sbt-marathon-templating plugin.
 
 Add the following line to `./project/plugins.sbt`.
@@ -179,8 +181,6 @@ Add the following line to `./project/plugins.sbt`.
 ```
 addSbtPlugin("com.tapad.sbt" % "sbt-marathon-templating" % "0.1.0-SNAPSHOT")
 ```
-
-## Tutorial
 
 ## Contributing
 
