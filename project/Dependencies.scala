@@ -12,6 +12,8 @@ object Dependencies {
 
   val FinagleVersion = "6.35.0"
 
+  val Json4sbtVersion = "3.4.1"
+
   def parserCombinators(scalaVersion: String): Option[ModuleID] = {
     CrossVersion.partialVersion(scalaVersion) match {
       case Some((2, 10)) => None

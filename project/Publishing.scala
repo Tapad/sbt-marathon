@@ -2,20 +2,14 @@ import sbt._
 import sbt.Keys._
 import sbtrelease.ReleasePlugin.autoImport._
 import sbtrelease.ReleaseStateTransformations._
-import Repositories._
 
 object Publishing {
 
-  /* Publish artifacts to the respective Tapad repository */
   val PublishSettings = Seq(
     autoAPIMappings := true,
     pomIncludeRepository := { _ => false },
     publishArtifact in Test := false,
-    publishArtifact in (Compile, packageDoc) := true,
-    publishMavenStyle := true,
-    publishTo := {
-      if (version.value.endsWith("SNAPSHOT")) Some(TapadSnapshots) else Some(TapadReleases)
-    }
+    publishArtifact in (Compile, packageDoc) := true
   )
 
   val CrossPublishSettings = PublishSettings ++ Seq(
@@ -24,10 +18,11 @@ object Publishing {
 
   /* `publish` performs a no-op */
   val NoopPublishSettings = Seq(
+    packagedArtifacts in file(".") := Map.empty,
     publish := (),
     publishLocal := (),
     publishArtifact := false,
-    publishTo := Some(LocalMaven)
+    publishTo := None
   )
 
   val ReleaseSettings = Seq(
