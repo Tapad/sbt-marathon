@@ -5,6 +5,7 @@ import Publishing._
 val BaseSettings = Seq(
   organization := "com.tapad.sbt",
   bintrayRepository := "sbt-plugins",
+  bintrayPackage := "sbt-marathon",
   licenses += ("BSD New", url("https://opensource.org/licenses/BSD-3-Clause")),
   scalaVersion := Dependencies.ScalaVersion
 )
