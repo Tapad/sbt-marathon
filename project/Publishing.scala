@@ -9,8 +9,7 @@ object Publishing {
     autoAPIMappings := true,
     pomIncludeRepository := { _ => false },
     publishArtifact in Test := false,
-    publishArtifact in (Compile, packageDoc) := true,
-    publishMavenStyle := true
+    publishArtifact in (Compile, packageDoc) := true
   )
 
   val CrossPublishSettings = PublishSettings ++ Seq(
