@@ -10,7 +10,8 @@ object Publishing {
     autoAPIMappings := true,
     pomIncludeRepository := { _ => false },
     publishArtifact in Test := false,
-    publishArtifact in (Compile, packageDoc) := true
+    publishArtifact in (Compile, packageDoc) := true,
+    publishArtifact in (Compile, packageSrc) := true
   )
 
   val CrossPublishSettings = PublishSettings ++ Seq(
@@ -33,7 +34,23 @@ object Publishing {
   val LibraryPublishSettings = CrossPublishSettings ++ Seq(
     bintrayRepository := "maven",
     bintrayPackage := "sbt-marathon-libs",
-    publishMavenStyle := true
+    publishMavenStyle := true,
+    pomIncludeRepository := { _ => false },
+    homepage := Some(new URL("https://github.com/Tapad/sbt-marathon")),
+    pomExtra := {
+      <developers>
+        <developer>
+          <id>jeffreyolchovy</id>
+          <name>Jeffrey Olchovy</name>
+          <email>jeffo@tapad.com</email>
+          <url>https://github.com/jeffreyolchovy</url>
+        </developer>
+      </developers>
+      <scm>
+        <url>https://github.com/Tapad/sbt-marathon</url>
+        <connection>scm:git:git://github.com/Tapad/sbt-marathon.git</connection>
+      </scm>
+    }
   )
 
   val ReleaseSettings = Seq(
