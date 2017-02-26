@@ -2,6 +2,7 @@ import sbt._
 import sbt.Keys._
 import sbtrelease.ReleasePlugin.autoImport._
 import sbtrelease.ReleaseStateTransformations._
+import bintray.BintrayKeys._
 
 object Publishing {
 
@@ -23,6 +24,16 @@ object Publishing {
     publishLocal := (),
     publishArtifact := false,
     publishTo := None
+  )
+
+  val PluginPublishSettings = PublishSettings ++ Seq(
+    bintrayRepository := "sbt-plugins"
+  )
+
+  val LibraryPublishSettings = CrossPublishSettings ++ Seq(
+    bintrayRepository := "maven",
+    bintrayPackage := "sbt-marathon-libs",
+    publishMavenStyle := true
   )
 
   val ReleaseSettings = Seq(

@@ -4,8 +4,6 @@ import Publishing._
 /* The base, minimal settings for every project, including the root aggregate project */
 val BaseSettings = Seq(
   organization := "com.tapad.sbt",
-  bintrayRepository := "sbt-plugins",
-  bintrayPackage := "sbt-marathon",
   licenses += ("BSD New", url("https://opensource.org/licenses/BSD-3-Clause")),
   scalaVersion := Dependencies.ScalaVersion
 )
@@ -34,7 +32,7 @@ lazy val root = (project in file("."))
 
 lazy val marathon = (project in file("marathon"))
   .settings(PluginSettings: _*)
-  .settings(PublishSettings: _*)
+  .settings(PluginPublishSettings: _*)
   .settings(
     libraryDependencies ++= Seq(
       "org.slf4j"      % "slf4j-api"        % "1.7.21",
@@ -52,7 +50,7 @@ lazy val marathon = (project in file("marathon"))
 
 lazy val templating = (project in file("templating"))
   .settings(PluginSettings: _*)
-  .settings(PublishSettings: _*)
+  .settings(PluginPublishSettings: _*)
   .settings(
     name := "sbt-marathon-templating",
     buildInfoKeys := Seq[BuildInfoKey](version),
@@ -77,7 +75,7 @@ lazy val templating = (project in file("templating"))
 
 lazy val templatingLib = (project in file("templating-lib"))
   .settings(CommonSettings: _*)
-  .settings(CrossPublishSettings: _*)
+  .settings(LibraryPublishSettings: _*)
   .settings(
     name := "marathon-templating-lib",
     libraryDependencies ++= Seq(
@@ -90,7 +88,7 @@ lazy val templatingLib = (project in file("templating-lib"))
 
 lazy val util = (project in file("util"))
   .settings(CommonSettings: _*)
-  .settings(CrossPublishSettings: _*)
+  .settings(LibraryPublishSettings: _*)
   .settings(
     name := "marathon-util",
     libraryDependencies := parserCombinators(scalaVersion.value).fold(libraryDependencies.value) {
