@@ -83,7 +83,8 @@ lazy val templatingLib = (project in file("templating-lib"))
       "org.slf4j"          % "slf4j-api"        % "1.7.21",
       "org.json4sbt"      %% "json4sbt-jackson" % "3.4.1",
       "com.typesafe.play" %% "twirl-api"        % "1.1.1" % "provided"
-    )
+    ),
+    parallelExecution in test := false
   )
 
 lazy val util = (project in file("util"))
