@@ -1,6 +1,20 @@
 # sbt-marathon
 An [sbt](http://scala-sbt.org) plugin for launching application containers on the Mesosphere [Marathon](https://mesosphere.github.io/marathon) platform.
 
+## Table of contents
+
+  * [Requirements](#requirements)
+  * [Installation](#installation)
+  * [Usage](#usage)
+    * [Marathon `Request.Builder`](#marathon-requestbuilder)
+    * [Integration with sbt-native-packager](#integration-with-sbt-native-packager)
+    * [Integration with sbt-docker](#integration-with-sbt-docker)
+    * [Templating](#templating)
+  * [Contributing](#contributing)
+    * [Project structure](#project-structure)
+    * [Running tests](#running-tests)
+    * [Releasing artifacts](#releasing-artifacts)
+
 ## Requirements
 - sbt (0.13.5+)
 - An installation of Marathon (1.0.0+) to target
