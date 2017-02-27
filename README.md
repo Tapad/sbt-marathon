@@ -45,6 +45,59 @@ marathonServiceRequest := Request.newBuilder()
 
 For more information on how to use the `Request.Builder`, please refer to [`sbtmarathon.adt`](marathon/src/main/scala/sbtmarathon/adt/package.scala) and the [`AdtSpec.scala`](marathon/src/test/scala/sbtmarathon/adt/AdtSpec.scala) unit test.
 
+### Integration with sbt-native-packager
+To use sbt-marathon in conjunction with sbt-native-packager, add the following to your `./project/plugins.sbt` and `build.sbt` files, respectively:
+
+```
+addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.1.1")
+
+addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0rc5")
+```
+
+```
+// specify the url of your Marathon service endpoint
+marathonServiceUrl := "http://localhost:8080/v2/apps"
+
+// specify the docker registry to which your images will be pushed
+dockerRegistry := "localhost:5000"
+dockerRepository in Docker := Some(dockerRegistry.value)
+
+// build the request that will be used to start and modify your application
+marathonServiceRequest := sbtmarathon.adt.Request.newBuilder()
+  .withId(marathonApplicationId.value)
+  .withContainer(
+    DockerContainer(
+      image = s"${dockerRegistry.value}/${(packageName in Docker).value}:${(version in Docker).value}",
+      network = "BRIDGE"
+    )
+  )
+  .build()
+```
+
+Lastly, be sure to enable both sbt-docker and sbt-marathon in your `build.sbt` file:
+
+```
+enablePlugins(JavaAppPackaging, DockerPlugin, MarathonPlugin)
+```
+
+Once configured properly, the typical workflow to deploy your application on Marathon is:
+
+1.  Build and push your image to the docker registry, if not already done
+2.  Generate your Marathon API request
+3.  Execute the request against the running Marathon server
+
+An example workflow, run from an interactive sbt session, is presented below:
+```
+$ sbt
+> docker:publish          // build and push image to docker registry
+> marathonServiceStart    // start application on Mesos
+> marathonServiceScale 5  // scale application to 5 instances
+...
+> marathonServiceDestroy  // at some point in the future, destroy your application, shutting down all running instances
+```
+
+For more information, refer to the documentation provided by [sbt-native-packager](https://github.com/sbt/sbt-native-packager) and the scripted integration test found at [marathon/src/sbt-test/sbt-marathon/native-packager](marathon/src/sbt-test/sbt-marathon/native-packager).
+
 ### Integration with sbt-docker
 To use sbt-marathon in conjunction with sbt-docker, add the following to your `./project/plugins.sbt` and `build.sbt` files, respectively:
 
@@ -119,59 +172,6 @@ $ sbt
 ```
 
 For more information, refer to the documentation provided by [sbt-docker](https://github.com/marcuslonnberg/sbt-docker) and the scripted integration test found at [marathon/src/sbt-test/sbt-marathon/docker](marathon/src/sbt-test/sbt-marathon/docker).
-
-### Integration with sbt-native-packager
-To use sbt-marathon in conjunction with sbt-native-packager, add the following to your `./project/plugins.sbt` and `build.sbt` files, respectively:
-
-```
-addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.1.1")
-
-addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0rc5")
-```
-
-```
-// specify the url of your Marathon service endpoint
-marathonServiceUrl := "http://localhost:8080/v2/apps"
-
-// specify the docker registry to which your images will be pushed
-dockerRegistry := "localhost:5000"
-dockerRepository in Docker := Some(dockerRegistry.value)
-
-// build the request that will be used to start and modify your application
-marathonServiceRequest := sbtmarathon.adt.Request.newBuilder()
-  .withId(marathonApplicationId.value)
-  .withContainer(
-    DockerContainer(
-      image = s"${dockerRegistry.value}/${(packageName in Docker).value}:${(version in Docker).value}",
-      network = "BRIDGE"
-    )
-  )
-  .build()
-```
-
-Lastly, be sure to enable both sbt-docker and sbt-marathon in your `build.sbt` file:
-
-```
-enablePlugins(JavaAppPackaging, DockerPlugin, MarathonPlugin)
-```
-
-Once configured properly, the typical workflow to deploy your application on Marathon is:
-
-1.  Build and push your image to the docker registry, if not already done
-2.  Generate your Marathon API request
-3.  Execute the request against the running Marathon server
-
-An example workflow, run from an interactive sbt session, is presented below:
-```
-$ sbt
-> docker:publish          // build and push image to docker registry
-> marathonServiceStart    // start application on Mesos
-> marathonServiceScale 5  // scale application to 5 instances
-...
-> marathonServiceDestroy  // at some point in the future, destroy your application, shutting down all running instances
-```
-
-For more information, refer to the documentation provided by [sbt-native-packager](https://github.com/sbt/sbt-native-packager) and the scripted integration test found at [marathon/src/sbt-test/sbt-marathon/native-packager](marathon/src/sbt-test/sbt-marathon/native-packager).
 
 ### Templating
 The [twirl templating engine](https://github.com/playframework/twirl) can be leveraged to help author Marathon requests by using the sbt-marathon-templating plugin.
