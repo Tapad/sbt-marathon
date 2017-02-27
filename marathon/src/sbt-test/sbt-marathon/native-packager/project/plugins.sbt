@@ -1,5 +1,3 @@
-resolvers += Resolver.bintrayRepo("jeffreyolchovy", "sbt-plugins")
-
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.1.1")
 
 {
