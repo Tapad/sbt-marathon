@@ -9,7 +9,7 @@ An [sbt](http://scala-sbt.org) plugin for launching application containers on th
 Add the following line to `./project/plugins.sbt`. See the [Using plugins](http://www.scala-sbt.org/release/docs/Using-Plugins.html) section of the sbt documentation for more information.
 
 ```
-addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0rc0")
+addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0rc5")
 ```
 
 ## Usage
@@ -51,7 +51,7 @@ To use sbt-marathon in conjunction with sbt-docker, add the following to your `.
 ```
 addSbtPlugin("se.marcuslonnberg" % "sbt-docker" % "1.4.0")
 
-addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0rc0")
+addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0rc5")
 ```
 
 ```
@@ -126,7 +126,7 @@ To use sbt-marathon in conjunction with sbt-native-packager, add the following t
 ```
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.1.1")
 
-addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0rc0")
+addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0rc5")
 ```
 
 ```
@@ -179,7 +179,7 @@ The [twirl templating engine](https://github.com/playframework/twirl) can be lev
 Add the following line to `./project/plugins.sbt`.
 
 ```
-addSbtPlugin("com.tapad.sbt" % "sbt-marathon-templating" % "0.1.0rc0")
+addSbtPlugin("com.tapad.sbt" % "sbt-marathon-templating" % "0.1.0rc5")
 ```
 
 ## Contributing
