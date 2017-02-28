@@ -1,1 +1,14 @@
-{"foo": "marathon-templating-simple"}
+{
+  "id": "marathon-templating-simple/v0.1.0",
+  "instances": 5,
+  "cmd": "sleep 1",
+  "cpus": 4.0,
+  "mem": 256.0,
+  "portDefinitions": [
+    { "port": 9000,
+      "protocol": "tcp",
+      "name": "admin"
+    }
+  ],
+  "requirePorts": false
+}

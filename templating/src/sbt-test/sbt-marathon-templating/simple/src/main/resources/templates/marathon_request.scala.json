@@ -1,3 +1,16 @@
-@(ctx: String)
+@(appId: String, instances: Int, cmd: Option[String], cpus: Double, mem: Double, requirePorts: Boolean)
 
-{"foo": "@{ctx}"}
+{
+  "id": "@appId",
+  "instances": @instances,
+  "cmd": "@{cmd.getOrElse("sleep 1")}",
+  "cpus": @cpus,
+  "mem": @mem,
+  "portDefinitions": [
+    { "port": 9000,
+      "protocol": "tcp",
+      "name": "admin"
+    }
+  ],
+  "requirePorts": @requirePorts
+}
