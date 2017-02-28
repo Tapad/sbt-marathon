@@ -7,18 +7,13 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class TemplateDriverSerializerSpec extends FlatSpec with Matchers {
 
+  import TemplateDriverSerializerSpec._
+
   behavior of "TemplateDriverSerializer"
 
   it should "serialize drivers with full type information" in {
-    val driver = TemplateDriver(
-      new {
-        val myName = "alice"
-        val volumes = Seq("/foo", "/bar")
-        val optional = None
-      }
-    )
     implicit var formats = DefaultFormats.preservingEmptyValues + TemplateDriverSerializer
-    val result = write[TemplateDriver](driver)
+    val result = write[TemplateDriver](SampleDriver)
     val resultJson = JsonMethods.parse(result)
 
     (resultJson \ "myName" \ "manifest" \ "runtimeName") shouldBe
@@ -36,10 +31,23 @@ class TemplateDriverSerializerSpec extends FlatSpec with Matchers {
     (resultJson \ "volumes" \ "value") shouldBe
       JString("""["/foo","/bar"]""")
 
-    (resultJson \ "optional" \ "manifest" \ "runtimeName") shouldBe
+    (resultJson \ "none" \ "manifest" \ "runtimeName") shouldBe
       JString("scala.None$")
 
-    (resultJson \ "optional" \ "value") shouldBe
+    (resultJson \ "none" \ "value") shouldBe
       JString("")
   }
+}
+
+object TemplateDriverSerializerSpec {
+  val SampleDriver = TemplateDriver(
+    new {
+      val myName = "alice"
+      val volumes = Seq("/foo", "/bar")
+      val someString: Option[String] = Some("foo")
+      val someEmptyString: Option[String] = Some("")
+      val noneString: Option[String] = None
+      val none = None
+    }
+  )
 }

@@ -15,7 +15,8 @@ object ValueMapDeserializer extends Serializer[ValueMap] {
         jfields.map {
           case (name, jobject: JObject) => try {
             val manifest = ManifestSerialization.parse((jobject \ "manifest").extract[JObject])
-            name -> read((jobject \ "value").extract[String])(DefaultFormats, manifest)
+            val valueString = (jobject \ "value").extractOpt[String].filter(_.nonEmpty).getOrElse("null")
+            name -> read(valueString)(DefaultFormats, manifest)
           } catch {
             case e: Exception => throw new MappingException(s"Can not convert JSON to ValueMap: ${e.getMessage}", e)
           }
