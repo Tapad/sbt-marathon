@@ -20,7 +20,7 @@ An [sbt](http://scala-sbt.org) plugin for launching application containers on th
 - An installation of Marathon (1.0.0+) to target
 
 ## Installation
-Add the following line to `./project/plugins.sbt`. See the [Using plugins](http://www.scala-sbt.org/release/docs/Using-Plugins.html) section of the sbt documentation for more information.
+Add the following line to `project/plugins.sbt`. See the [Using plugins](http://www.scala-sbt.org/release/docs/Using-Plugins.html) section of the sbt documentation for more information.
 
 ```
 addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0rc5")
@@ -33,9 +33,7 @@ The sbt-marathon plugin provides a fluent interface to construct Marathon reques
 
 When communicating with Marathon's REST API, a JSON payload is required to specify the identity, properties, and constraints of your application.
 
-The `sbtmarathon.adt.Request.Builder` provides a fluent interface for creating these JSON payloads.
-
-You can leverage the `Request.Builder` as follows in your build definition:
+Leverage `sbtmarathon.adt.Request.Builder` from within your build definition to create these JSON payloads:
 
 ```
 import sbtmarathon.adt._
@@ -60,7 +58,7 @@ marathonServiceRequest := Request.newBuilder()
 For more information on how to use the `Request.Builder`, please refer to [`sbtmarathon.adt`](marathon/src/main/scala/sbtmarathon/adt/package.scala) and the [`AdtSpec.scala`](marathon/src/test/scala/sbtmarathon/adt/AdtSpec.scala) unit test.
 
 ### Integration with sbt-native-packager
-To use sbt-marathon in conjunction with sbt-native-packager, add the following to your `./project/plugins.sbt` and `build.sbt` files, respectively:
+To use sbt-marathon in conjunction with sbt-native-packager, add the following to your `project/plugins.sbt` and `build.sbt` files, respectively:
 
 ```
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.1.1")
@@ -113,7 +111,7 @@ $ sbt
 For more information, refer to the documentation provided by [sbt-native-packager](https://github.com/sbt/sbt-native-packager) and the scripted integration test found at [marathon/src/sbt-test/sbt-marathon/native-packager](marathon/src/sbt-test/sbt-marathon/native-packager).
 
 ### Integration with sbt-docker
-To use sbt-marathon in conjunction with sbt-docker, add the following to your `./project/plugins.sbt` and `build.sbt` files, respectively:
+To use sbt-marathon in conjunction with sbt-docker, add the following to your `project/plugins.sbt` and `build.sbt` files, respectively:
 
 ```
 addSbtPlugin("se.marcuslonnberg" % "sbt-docker" % "1.4.0")
@@ -190,11 +188,53 @@ For more information, refer to the documentation provided by [sbt-docker](https:
 ### Templating
 The [twirl templating engine](https://github.com/playframework/twirl) can be leveraged to help author Marathon requests by using the sbt-marathon-templating plugin.
 
-Add the following line to `./project/plugins.sbt`.
+Add the following lines to `project/plugins.sbt`.
 
 ```
+addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0rc5")
+
 addSbtPlugin("com.tapad.sbt" % "sbt-marathon-templating" % "0.1.0rc5")
 ```
+
+In your build.sbt file, specify the location of your template and the parameters to pass to it:
+
+```
+marathonTemplates += Template(
+  file = (sourceDirectory in Templating).value / "marathon_request.json.scala",
+  driver = new {
+    val appId = marathonApplicationId.value
+    val instances = 5
+    val cmd = (mainClass in (Compile, run)).value
+    val cpus = 4.0
+    val mem = 256.0
+    val requirePorts = false
+  }
+)
+```
+
+Ensure that the `marathonServiceRequest` task depends on and utilizes the output of the evaluated template:
+
+```
+marathonServiceRequest := {
+  val _ = marathonEvaluateTemplates.value
+  IO.read((target in Templating).value / "marathon_request.json")
+}
+```
+
+Lastly, be sure to enable both sbt-marathon and sbt-marathon-templating in your `build.sbt` file:
+
+```
+enablePlugins(MarathonPlugin, TemplatingPlugin)
+```
+
+The values for the settings provided by sbt-marathon-templating, given a default build definition, can be found in the table below:
+
+| Setting key (scope:name)   | Default value                |
+| -------------------------- | ---------------------------- |
+| templating:sourceDirectory | src/main/resources/templates |
+| templating:target          | src/main/resources/generated |
+
+These can be customized to suit your project's structure.
 
 ## Contributing
 
