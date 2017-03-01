@@ -196,11 +196,34 @@ addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0rc5")
 addSbtPlugin("com.tapad.sbt" % "sbt-marathon-templating" % "0.1.0rc5")
 ```
 
-In your build.sbt file, specify the location of your template and the parameters to pass to it:
+Create a twirl template in the location specifed by `templating:sourceDirectory`. By default, this location will be the `templates` subdirectory inside of your project's resources directory (e.g. `src/main/resources/templates`).
+
+For the following example, a template with the file name `marathon_request.scala.json` has been added to `src/main/resources/templates/marathon_request.scala.json`. Its contents are:
+
+```
+@(appId: String, instances: Int, cmd: Option[String], cpus: Double, mem: Double, requirePorts: Boolean)
+
+{
+  "id": "@appId",
+  "instances": @instances,
+  "cmd": "@{cmd.getOrElse("sleep 1")}",
+  "cpus": @cpus,
+  "mem": @mem,
+  "portDefinitions": [
+    { "port": 9000,
+      "protocol": "tcp",
+      "name": "admin"
+    }
+  ],
+  "requirePorts": @requirePorts
+}
+```
+
+In your `build.sbt` file, specify the location of this template and the parameters to pass to it:
 
 ```
 marathonTemplates += Template(
-  file = (sourceDirectory in Templating).value / "marathon_request.json.scala",
+  file = (sourceDirectory in Templating).value / "marathon_request.scala.json",
   driver = new {
     val appId = marathonApplicationId.value
     val instances = 5
@@ -227,6 +250,8 @@ Lastly, be sure to enable both sbt-marathon and sbt-marathon-templating in your 
 enablePlugins(MarathonPlugin, TemplatingPlugin)
 ```
 
+When the `marathonServiceRequest` and/or `marathonEvaluateTemplates` tasks are executed, the result from evaluating this template will be placed in `templating:target`, which by default, will be the `generated` subdirectory of your project's resources directory (e.g. `src/main/resources/generated`).
+
 The values for the settings provided by sbt-marathon-templating, given a default build definition, can be found in the table below:
 
 | Setting key (scope:name)   | Default value                |
@@ -235,6 +260,92 @@ The values for the settings provided by sbt-marathon-templating, given a default
 | templating:target          | src/main/resources/generated |
 
 These can be customized to suit your project's structure.
+
+sbt-marathon-templating need not only be used for templating Marathon API requests. It is possible to template any type of resource and evaluate it for inclusion in a Docker image, for instance. This is a handy way of injecting information about your project and your project's build definition into your containers and their constituent components.
+
+For example, given a (templated) shell script that will live alongside our application, which needs to access to project metadata:
+
+```
+@(appName: String, appVersion: String, appDependencies: Seq[String])
+
+#!/bin/bash
+
+usage() {
+  echo "usage: $(basename "$0") [-h|-v|--dependencies]"
+}
+
+print_version() {
+  echo "@{appName} @{appVersion}"
+}
+
+print_dependencies() {
+  echo "@{appName} dependencies:"
+  @for(dependency <- appDependencies) {
+    echo "@{dependency}"
+  }
+}
+
+for arg in "$@@"
+do
+  argi=$((argi + 1))
+  next=${args[argi]}
+
+  case $arg in
+    -h)
+      usage
+      ;;
+    -v)
+      print_version
+      ;;
+    --dependencies)
+      print_dependencies
+      ;;
+    *)
+      echo 'Unknown option'
+      usage
+      exit 1
+  esac
+done
+```
+
+We can adjust our build accordingly so that this template will be evaluated and the generated resource will be available for inclusion in a Docker image:
+
+```
+// ensure that twirl will evaluate `scala.sh` templates
+TwirlKeys.templateFormats += "sh" -> "play.twirl.api.TxtFormat"
+
+// add the trivial_script.scala.sh template to our list of templates that will be evaluated
+marathonTemplates += Template(
+  file = (sourceDirectory in Templating).value / "trivial_script.scala.sh",
+  driver = new {
+    val appName = name.value
+    val appVersion = version.value
+    val appDependencies = allDependencies.value.map(_.toString)
+  }
+)
+```
+
+The generated resource will appear in `templating:target` after evaluating templates via the `marathonEvaluateTemplates` task.
+
+Leverage the generated resource, by referencing its non-template file name in the `templating:target` directory.
+
+To add the resource to your Docker image (using sbt-docker), for instance:
+
+```
+dockerfile in docker := {
+  (mainClass in docker).value match {
+    case None => sys.error("A main class is not defined. Please declare a value for the `mainClass` setting.")
+    case Some(mainClass) =>
+      ImmutableDockerfile.empty
+        .from("java")
+        .add((target in Templating).value / "trivial_script.sh", "/bin/")
+        .add((fullClasspath in Compile).value.files, "/app/")
+        .entryPoint("java", "-cp", "/app:/app/*", mainClass, "$@")
+  }
+}
+```
+
+For more information, refer to the scripted integration test found at [templating/src/sbt-test/sbt-marathon-templating/simple](templating/src/sbt-test/sbt-marathon-templating/simple).
 
 ## Contributing
 

@@ -13,16 +13,28 @@ marathonServiceRequest := {
   IO.read((target in Templating).value / "marathon_request.json")
 }
 
-marathonTemplates += Template(
-  file = (sourceDirectory in Templating).value / "marathon_request.json.scala",
-  driver = new {
-    val appId = marathonApplicationId.value
-    val instances = 5
-    val cmd = (mainClass in (Compile, run)).value
-    val cpus = 4.0
-    val mem = 256.0
-    val requirePorts = false
-  }
+marathonTemplates ++= Seq(
+  Template(
+    file = (sourceDirectory in Templating).value / "marathon_request.scala.json",
+    driver = new {
+      val appId = marathonApplicationId.value
+      val instances = 5
+      val cmd = (mainClass in (Compile, run)).value
+      val cpus = 4.0
+      val mem = 256.0
+      val requirePorts = false
+    }
+  ),
+  Template(
+    file = (sourceDirectory in Templating).value / "trivial_script.scala.sh",
+    driver = new {
+      val appName = name.value
+      val appVersion = version.value
+      val appDependencies = allDependencies.value.map(_.toString)
+    }
+  )
 )
+
+TwirlKeys.templateFormats += "sh" -> "play.twirl.api.TxtFormat"
 
 enablePlugins(MarathonPlugin, TemplatingPlugin)
