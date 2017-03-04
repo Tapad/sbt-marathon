@@ -17,9 +17,11 @@ class MarathonService(url: URL) {
 
   val port = if (url.getPort < 0) url.getDefaultPort else url.getPort
 
+  val apiUrl = new URL(url.getProtocol, url.getHost, port, RestApiPath)
+
   def start(jsonString: String): Result Or Throwable = {
     val request = RequestBuilder()
-      .url(url)
+      .url(apiUrl)
       .setHeader("Content-type", JsonContentType)
       .buildPost(jsonString)
     executeRequest(request)
@@ -86,13 +88,12 @@ class MarathonService(url: URL) {
   }
 
   def instanceServiceUrl(applicationId: String): URL = {
-    val pathWithoutTrailingSlashes = url.getFile.replaceAll("/+$", "")
-    new URL(url.getProtocol, url.getHost, port, pathWithoutTrailingSlashes + s"/$applicationId")
+    new URL(url.getProtocol, url.getHost, port, RestApiPath + "/" + applicationId)
   }
 
   def instanceGuiUrl(applicationId: String): URL = {
     val encodedApplicationId = URLEncoder.encode(s"/$applicationId", "UTF-8")
-    val path =  s"/ui/#/apps/$encodedApplicationId"
+    val path = GuiPath + "/" + encodedApplicationId
     new URL(url.getProtocol, url.getHost, port, path)
   }
 }
@@ -108,6 +109,10 @@ object MarathonService {
   case class Success(responseString: String) extends Result
   case class UserError(responseString: String) extends Result
   case class SystemError(responseString: String) extends Result
+
+  val RestApiPath = "/v2/apps"
+
+  val GuiPath = "/ui/#/apps"
 
   val JsonContentType = "application/json"
 

@@ -12,19 +12,19 @@ class MarathonServiceSpec extends FlatSpec with Matchers with EitherValues {
       val url = new URL("http://localhost:8000");
       val service = new MarathonService(url)
       val instanceUrl = service.instanceServiceUrl("foo")
-      instanceUrl shouldBe new URL(url, "foo")
+      instanceUrl shouldBe new URL(url, MarathonService.RestApiPath + "/foo")
     }
     {
       val url = new URL("http://localhost:8000/");
       val service = new MarathonService(url)
       val instanceUrl = service.instanceServiceUrl("foo")
-      instanceUrl shouldBe new URL(url, "foo")
+      instanceUrl shouldBe new URL(url, MarathonService.RestApiPath + "/foo")
     }
     {
       val url = new URL("http://localhost:8000/foo/bar/");
       val service = new MarathonService(url)
       val instanceUrl = service.instanceServiceUrl("baz")
-      instanceUrl shouldBe new URL(url, "baz")
+      instanceUrl shouldBe new URL(url, MarathonService.RestApiPath + "/baz")
     }
   }
 

@@ -18,9 +18,9 @@ case class MockMarathonService() extends Service[Request, Response] {
   private val applicationInstances = new ConcurrentHashMap[String, AtomicInteger]
 
   private val underlying = RoutingService.byMethodAndPathObject[Request] {
-    case (Method.Post, Root) => startRequestHandler
-    case (Method.Delete, Root / applicationId) => destroyRequestHandler(applicationId)
-    case (Method.Delete, Root) => systemErrorHandler
+    case (Method.Post, Root / "v2" / "apps") => startRequestHandler
+    case (Method.Delete, Root / "v2" / "apps" / applicationId) => destroyRequestHandler(applicationId)
+    case (Method.Delete, Root / "v2" / "apps") => systemErrorHandler
   }
 
   def apply(request: Request): Future[Response] = {

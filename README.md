@@ -67,8 +67,8 @@ addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0rc5")
 ```
 
 ```
-// specify the url of your Marathon service endpoint
-marathonServiceUrl := "http://localhost:8080/v2/apps"
+// specify the url of your Marathon service
+marathonServiceUrl := "http://localhost:8080"
 
 // specify the docker registry to which your images will be pushed
 dockerRegistry := "localhost:5000"
@@ -120,8 +120,8 @@ addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0rc5")
 ```
 
 ```
-// specify the url of your Marathon service endpoint
-marathonServiceUrl := "http://localhost:8080/v2/apps"
+// specify the url of your Marathon service
+marathonServiceUrl := "http://localhost:8080"
 
 // specify the docker registry to which your images will be pushed
 dockerRegistry := "registry.hub.docker.com" // or a host/port pair pointing to your.private.registry:5000

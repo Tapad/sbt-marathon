@@ -12,7 +12,7 @@ dockerRegistry := "localhost:5000"
 
 dockerRepository in Docker := Some(dockerRegistry.value)
 
-marathonServiceUrl := "http://localhost:8080/v2/apps"
+marathonServiceUrl := "http://localhost:8080"
 
 marathonServiceRequest := Request.newBuilder()
   .withId(marathonApplicationId.value)

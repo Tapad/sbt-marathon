@@ -6,7 +6,7 @@ version := "0.1.0"
 
 dockerRegistry := "localhost:5000"
 
-marathonServiceUrl := "http://localhost:8080/v2/apps"
+marathonServiceUrl := "http://localhost:8080"
 
 marathonServiceRequest := {
   val _ = marathonEvaluateTemplates.value
