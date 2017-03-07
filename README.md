@@ -25,7 +25,7 @@ Add the following line to `project/plugins.sbt`. See the [Using plugins](http://
 ```
 resolvers += Resolver.jcenterRepo // temporarily required until Maven Central syncing issue is resolved
 
-addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0rc5")
+addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0")
 ```
 
 ## Usage
@@ -65,7 +65,7 @@ To use sbt-marathon in conjunction with sbt-native-packager, add the following t
 ```
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.1.1")
 
-addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0rc5")
+addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0")
 ```
 
 ```
@@ -118,7 +118,7 @@ To use sbt-marathon in conjunction with sbt-docker, add the following to your `p
 ```
 addSbtPlugin("se.marcuslonnberg" % "sbt-docker" % "1.4.0")
 
-addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0rc5")
+addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0")
 ```
 
 ```
@@ -195,9 +195,9 @@ Add the following lines to `project/plugins.sbt`.
 ```
 resolvers += Resolver.jcenterRepo // temporarily required until Maven Central syncing issue is resolved
 
-addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0rc5")
+addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0")
 
-addSbtPlugin("com.tapad.sbt" % "sbt-marathon-templating" % "0.1.0rc5")
+addSbtPlugin("com.tapad.sbt" % "sbt-marathon-templating" % "0.1.0")
 ```
 
 Create a twirl template in the location specifed by `templating:sourceDirectory`. By default, this location will be the `templates` subdirectory inside of your project's resources directory (e.g. `src/main/resources/templates`).
