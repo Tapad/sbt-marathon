@@ -23,8 +23,6 @@ An [sbt](http://scala-sbt.org) plugin for launching application containers on th
 Add the following line to `project/plugins.sbt`. See the [Using plugins](http://www.scala-sbt.org/release/docs/Using-Plugins.html) section of the sbt documentation for more information.
 
 ```
-resolvers += Resolver.jcenterRepo // temporarily required until Maven Central syncing issue is resolved
-
 addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0")
 ```
 
@@ -193,8 +191,6 @@ The [twirl templating engine](https://github.com/playframework/twirl) can be lev
 Add the following lines to `project/plugins.sbt`.
 
 ```
-resolvers += Resolver.jcenterRepo // temporarily required until Maven Central syncing issue is resolved
-
 addSbtPlugin("com.tapad.sbt" % "sbt-marathon" % "0.1.0")
 
 addSbtPlugin("com.tapad.sbt" % "sbt-marathon-templating" % "0.1.0")
