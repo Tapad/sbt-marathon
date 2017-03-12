@@ -1,1 +1,8 @@
 > marathonServiceRequest
+> marathonServiceUrl
+> marathonSetServiceUrl 'http://localhost:9000'
+> marathonServiceUrl
+$ pause
+> reload
+> marathonServiceUrl
+$ pause

@@ -26,6 +26,7 @@ object MarathonSettings {
   )
 
   lazy val defaultSettings = Seq(
+    commands += setMarathonServiceUrl,
     marathonApplicationId := {
       val parsedVersion = Version(version.value)
       val sanitizedName = sanitizeApplicationIdToken(name.value)
@@ -159,6 +160,15 @@ object MarathonSettings {
       }
     }
   )
+
+  def setMarathonServiceUrl = Command.single("marathonSetServiceUrl") { (state, url) =>
+    Project.extract(state).append(
+      Seq(
+        marathonServiceUrl := url
+      ),
+      state
+    )
+  }
 
   def sanitizeApplicationIdToken(token: String): String = token
     .replaceAll("[^a-zA-Z0-9\\-\\.]", "-") // replace invalid characters with dashes
