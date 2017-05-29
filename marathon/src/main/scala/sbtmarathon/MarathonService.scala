@@ -64,9 +64,11 @@ class MarathonService(url: URL) {
   }
 
   def executeRequest(request: Request, url: URL = this.url): Result Or Throwable = {
+    val host = url.getHost
     val port = if (url.getPort < 0) url.getDefaultPort else url.getPort
-    val addr = Address(new InetSocketAddress(url.getHost, port))
-    val service = Http.newService(Name.bound(addr), "")
+    val addr = Address(new InetSocketAddress(host, port))
+    val client = if (url.getProtocol == "https") Http.client.withTlsWithoutValidation else Http.client
+    val service = client.newService(Name.bound(addr), "")
     val response = service(request).ensure { service.close() }
     val promise = Promise[Response]
     response.onSuccess(promise.success _)
