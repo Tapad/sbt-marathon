@@ -44,7 +44,8 @@ lazy val marathon = (project in file("marathon"))
     ),
     publishLocal := {
       (publishLocal.dependsOn(publishLocal in util)).value
-    }
+    },
+    testOptions in Test += Tests.Argument("-l", "sbtmarathon.FunctionalTest")
   )
   .dependsOn(util)
 
