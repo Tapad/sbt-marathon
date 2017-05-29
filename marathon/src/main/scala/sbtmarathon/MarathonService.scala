@@ -7,6 +7,7 @@ import scala.concurrent.duration.Duration
 import com.twitter.finagle.{Http, Name, Address}
 import com.twitter.finagle.http.{RequestBuilder, Request, Response}
 import com.twitter.io.Buf
+import com.twitter.util.Base64StringEncoder
 import org.json4sbt._
 import org.json4sbt.jackson.JsonMethods._
 import org.scalactic.{Or, Good, Bad}
@@ -68,6 +69,10 @@ class MarathonService(url: URL) {
     val port = if (url.getPort < 0) url.getDefaultPort else url.getPort
     val addr = Address(new InetSocketAddress(host, port))
     val client = if (url.getProtocol == "https") Http.client.withTlsWithoutValidation else Http.client
+    Option(url.getUserInfo).foreach { credentials =>
+      val encodedCredentials = Base64StringEncoder.encode(credentials.getBytes("UTF-8"))
+      request.authorization = s"Basic $encodedCredentials"
+    }
     val service = client.newService(Name.bound(addr), "")
     val response = service(request).ensure { service.close() }
     val promise = Promise[Response]
