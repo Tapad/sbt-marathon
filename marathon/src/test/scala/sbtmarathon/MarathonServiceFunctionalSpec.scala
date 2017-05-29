@@ -48,8 +48,8 @@ class MarathonServiceFunctionalSpec extends FlatSpec with Matchers with EitherVa
     resultE.right.value shouldBe a [MarathonService.Success]
   }
 
-  it should "execute requests against HTTP URLs that include basic authenticaiton credentials" taggedAs (FunctionalTest) in {
-    val url = new URL("http://user:password@example.com")
+  it should "execute requests against HTTP URLs that include basic authentication credentials" taggedAs (FunctionalTest) in {
+    val url = new URL("http://user:password@httpbin.org/basic-auth/user/password")
     val service = new MarathonService(url)
     val request = getRequest(url)
     val result = service.executeRequest(request, url)
@@ -58,8 +58,8 @@ class MarathonServiceFunctionalSpec extends FlatSpec with Matchers with EitherVa
     resultE.right.value shouldBe a [MarathonService.Success]
   }
 
-  it should "execute requests against HTTPS URLs that include basic authenticaiton credentials" taggedAs (FunctionalTest) in {
-    val url = new URL("https://user:password@example.com")
+  it should "execute requests against HTTPS URLs that include basic authentication credentials" taggedAs (FunctionalTest) in {
+    val url = new URL("https://user:password@httpbin.org/basic-auth/user/password")
     val service = new MarathonService(url)
     val request = getRequest(url)
     val result = service.executeRequest(request, url)

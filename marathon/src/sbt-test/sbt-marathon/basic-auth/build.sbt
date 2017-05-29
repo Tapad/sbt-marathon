@@ -6,7 +6,7 @@ version := "0.1.0"
 
 dockerRegistry := "localhost"
 
-marathonServiceUrl := "https://user:password@example.com:8080"
+marathonServiceUrl := "https://user:password@httpbin.org/basic-auth/user/password"
 
 marathonServiceRequest := {
  s"""
