@@ -384,5 +384,22 @@ To selectively run a single `scripted` test suite, issue `scripted <name of plug
 
 Please note that `publishLocal` will be invoked when running `scripted`. `scripted` tests take longer to run than unit tests and will log myriad output to stdout. Also note that any output written to stderr during the execution of a `scripted` test will result in `ERROR` level log entries. These log entries will not effect the resulting status of the actual test.
 
+Additionally, certain tests are tagged with ScalaTest tags and will be excluded when running the sbt `test` task.
+
+To execute these tagged tests, you can manually lift their exclusions in an interactive sbt session:
+
+```
+$ sbt
+> project marathon
+> set testOptions in Test := Seq.empty
+```
+
+You can also reinstate their exclusion in the same session, if desired:
+```
+> set testOptions in Test += Tests.Argument("-l", "sbtmarathon.FunctionalTest")
+```
+
+Manually lifting this exclusion is not a permanent change. Any reload of the build configuration will reinstate the project's default exclusions.
+
 ### Releasing artifacts
 `sbt-marathon` uses [https://github.com/sbt/sbt-release](sbt-release). Simply invoke `release` from the root project to release all artifacts.

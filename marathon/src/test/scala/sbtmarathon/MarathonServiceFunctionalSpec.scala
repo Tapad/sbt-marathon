@@ -8,7 +8,7 @@ class MarathonServiceFunctionalSpec extends FlatSpec with Matchers with EitherVa
 
   behavior of "MarathonService"
 
-  it should "execute requests against HTTP URLs with no explicit port specified" in {
+  it should "execute requests against HTTP URLs with no explicit port specified" taggedAs (FunctionalTest) in {
     val url = new URL("http://example.com")
     val service = new MarathonService(url)
     val request = getRequest(url)
@@ -18,7 +18,7 @@ class MarathonServiceFunctionalSpec extends FlatSpec with Matchers with EitherVa
     resultE.right.value shouldBe a [MarathonService.Success]
   }
 
-  it should "execute requests against HTTP URLs with an explicit port specified" in {
+  it should "execute requests against HTTP URLs with an explicit port specified" taggedAs (FunctionalTest) in {
     val url = new URL("http://example.com:80")
     val service = new MarathonService(url)
     val request = getRequest(url)
@@ -28,7 +28,7 @@ class MarathonServiceFunctionalSpec extends FlatSpec with Matchers with EitherVa
     resultE.right.value shouldBe a [MarathonService.Success]
   }
 
-  it should "execute requests against HTTPs URLs with no explicit port specified" in {
+  it should "execute requests against HTTPs URLs with no explicit port specified" taggedAs (FunctionalTest) in {
     val url = new URL("https://example.com")
     val service = new MarathonService(url)
     val request = getRequest(url)
@@ -38,7 +38,7 @@ class MarathonServiceFunctionalSpec extends FlatSpec with Matchers with EitherVa
     resultE.right.value shouldBe a [MarathonService.Success]
   }
 
-  it should "execute requests against HTTPs URLs with an explicit port specified" in {
+  it should "execute requests against HTTPs URLs with an explicit port specified" taggedAs (FunctionalTest) in {
     val url = new URL("https://example.com:443")
     val service = new MarathonService(url)
     val request = getRequest(url)
