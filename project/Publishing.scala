@@ -8,7 +8,7 @@ object Publishing {
 
   val PublishSettings = Seq(
     autoAPIMappings := true,
-    bintrayOrganization := Some("tapad"),
+    bintrayOrganization := Some("tapad-oss"),
     pomIncludeRepository := { _ => false },
     publishArtifact in Test := false,
     publishArtifact in (Compile, packageDoc) := true,
