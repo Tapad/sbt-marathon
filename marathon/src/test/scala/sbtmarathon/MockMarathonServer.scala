@@ -4,19 +4,21 @@ import java.io.IOException
 import java.net.{InetSocketAddress, ServerSocket}
 import java.util.concurrent.Executors
 import scala.concurrent.{ExecutionContext, Future}
-import com.twitter.finagle.Http
+import com.twitter.finagle.{Http, Service}
+import com.twitter.finagle.http.{Request, Response}
 import com.twitter.util.Await
 import org.slf4j.LoggerFactory
 
-case class MockMarathonServer(port: Int = MockMarathonServer.randomPort) {
+class MockMarathonServer(
+  val port: Int = MockMarathonServer.randomPort,
+  val service: Service[Request, Response] = MockMarathonService()
+) {
 
   val executor = Executors.newSingleThreadExecutor()
 
   implicit val executionContext = ExecutionContext.fromExecutor(executor)
 
   val logger = LoggerFactory.getLogger(getClass)
-
-  val service = MockMarathonService()
 
   def start(): Unit = {
     val addr = new InetSocketAddress(port)
@@ -33,7 +35,7 @@ case class MockMarathonServer(port: Int = MockMarathonServer.randomPort) {
 object MockMarathonServer {
 
   def withServer[A](f: MockMarathonServer => A): A = {
-    val server = MockMarathonServer()
+    val server = new MockMarathonServer()
     try {
       server.start()
       f(server)
