@@ -26,13 +26,28 @@ class MarathonServiceSpec extends FlatSpec with Matchers with EitherValues {
       val instanceUrl = service.instanceServiceUrl("baz")
       instanceUrl shouldBe new URL(url, MarathonService.RestApiPath + "/baz")
     }
+    {
+      val url = new URL("http://user:password@localhost:8000/foo/bar/");
+      val service = new MarathonService(url)
+      val instanceUrl = service.instanceServiceUrl("baz")
+      println(instanceUrl)
+      instanceUrl shouldBe new URL(url, MarathonService.RestApiPath + "/baz")
+    }
   }
 
   it should "build URLs that reference the GUI of an application instance" in {
-    val url = new URL(s"http://localhost:8000")
-    val service = new MarathonService(url)
-    val instanceUrl = service.instanceGuiUrl("foo")
-    instanceUrl shouldBe new URL(url, "ui/#/apps/%2Ffoo")
+    {
+      val url = new URL(s"http://localhost:8000")
+      val service = new MarathonService(url)
+      val instanceUrl = service.instanceGuiUrl("foo")
+      instanceUrl shouldBe new URL(url, "ui/#/apps/%252Ffoo")
+    }
+    {
+      val url = new URL(s"http://user:password@localhost:8000")
+      val service = new MarathonService(url)
+      val instanceUrl = service.instanceGuiUrl("foo")
+      instanceUrl shouldBe new URL(url, "ui/#/apps/%252Ffoo")
+    }
   }
 
   it should "return a Success result when a 20x response is received" in {
