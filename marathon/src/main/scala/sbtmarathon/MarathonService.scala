@@ -7,6 +7,7 @@ import scala.concurrent.duration.Duration
 import com.twitter.finagle.{Http, Name, Address}
 import com.twitter.finagle.http.{RequestBuilder, Request, Response}
 import com.twitter.io.Buf
+import com.twitter.util.Base64StringEncoder
 import org.json4sbt._
 import org.json4sbt.jackson.JsonMethods._
 import org.scalactic.{Or, Good, Bad}
@@ -17,7 +18,7 @@ class MarathonService(url: URL) {
 
   val port = if (url.getPort < 0) url.getDefaultPort else url.getPort
 
-  val apiUrl = new URL(url.getProtocol, url.getHost, port, RestApiPath)
+  val apiUrl = UrlUtil.copy(url, port = port, path = RestApiPath)
 
   def start(jsonString: String): Result Or Throwable = {
     val request = RequestBuilder()
@@ -64,9 +65,15 @@ class MarathonService(url: URL) {
   }
 
   def executeRequest(request: Request, url: URL = this.url): Result Or Throwable = {
+    val host = url.getHost
     val port = if (url.getPort < 0) url.getDefaultPort else url.getPort
-    val addr = Address(new InetSocketAddress(url.getHost, port))
-    val service = Http.newService(Name.bound(addr), "")
+    val addr = Address(new InetSocketAddress(host, port))
+    val client = if (url.getProtocol == "https") Http.client.withTlsWithoutValidation else Http.client
+    Option(url.getUserInfo).foreach { credentials =>
+      val encodedCredentials = Base64StringEncoder.encode(credentials.getBytes("UTF-8"))
+      request.authorization = s"Basic $encodedCredentials"
+    }
+    val service = client.newService(Name.bound(addr), "")
     val response = service(request).ensure { service.close() }
     val promise = Promise[Response]
     response.onSuccess(promise.success _)
@@ -88,13 +95,12 @@ class MarathonService(url: URL) {
   }
 
   def instanceServiceUrl(applicationId: String): URL = {
-    new URL(url.getProtocol, url.getHost, port, RestApiPath + "/" + applicationId)
+    UrlUtil.copy(url, port = port, path = RestApiPath + s"/$applicationId")
   }
 
   def instanceGuiUrl(applicationId: String): URL = {
-    val encodedApplicationId = URLEncoder.encode(s"/$applicationId", "UTF-8")
-    val path = GuiPath + "/" + encodedApplicationId
-    new URL(url.getProtocol, url.getHost, port, path)
+    val fragment = "/apps/" + URLEncoder.encode(s"/$applicationId", "UTF-8")
+    UrlUtil.copy(url, port = port, path = GuiPath, fragment = fragment)
   }
 }
 
@@ -112,7 +118,7 @@ object MarathonService {
 
   val RestApiPath = "/v2/apps"
 
-  val GuiPath = "/ui/#/apps"
+  val GuiPath = "/ui/"
 
   val JsonContentType = "application/json"
 
