@@ -32,6 +32,13 @@ class MarathonServiceSpec extends FlatSpec with Matchers with EitherValues {
       val instanceUrl = service.instanceServiceUrl("baz")
       instanceUrl shouldBe new URL(url, MarathonService.RestApiPath + "/baz")
     }
+    {
+      val url = new URL("http://localhost:8000/foo/bar/");
+      val service = new MarathonService(url)
+      val instanceUrl = service.instanceServiceUrl("baz")
+      val restartUrl = UrlUtil.copy(instanceUrl, path = instanceUrl.getPath + "/restart")
+      restartUrl shouldBe new URL(url, MarathonService.RestApiPath + "/baz/restart")
+    }
   }
 
   it should "build URLs that reference the GUI of an application instance" in {
