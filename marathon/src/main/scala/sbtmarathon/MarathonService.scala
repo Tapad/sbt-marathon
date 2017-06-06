@@ -46,7 +46,8 @@ class MarathonService(url: URL) {
   }
 
   def restart(applicationId: String): Result Or Throwable = {
-    val url = instanceServiceUrl(applicationId)
+    val instanceUrl = instanceServiceUrl(applicationId)
+    val url = UrlUtil.copy(instanceUrl, path = instanceUrl.getPath + "/restart")
     val request = RequestBuilder()
       .url(url)
       .setHeader("Content-type", JsonContentType)
