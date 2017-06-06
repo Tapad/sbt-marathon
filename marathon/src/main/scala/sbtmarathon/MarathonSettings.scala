@@ -82,7 +82,7 @@ object MarathonSettings {
         case Good(MarathonService.Success(_)) =>
           log.info("Application successfully destroyed")
         case Good(result) if result.message.nonEmpty =>
-          sys.error(s"Unable to destroy application $applicationId: ${result.message}")
+          sys.error(s"Unable to destroy application $applicationId: ${result.message.get}")
         case Good(result) =>
           sys.error(s"Unable to destroy application $applicationId")
         case Bad(e) =>
@@ -104,7 +104,7 @@ object MarathonSettings {
           val url = service.instanceGuiUrl(applicationId)
           log.info(s"Open $url in your browser to administer the application")
         case Good(result) if result.message.nonEmpty =>
-          sys.error(s"Unable to update application $applicationId: ${result.message}")
+          sys.error(s"Unable to update application $applicationId: ${result.message.get}")
         case Good(result) =>
           sys.error(s"Unable to update application $applicationId")
         case Bad(e) =>
@@ -125,7 +125,7 @@ object MarathonSettings {
           val url = service.instanceGuiUrl(applicationId)
           log.info(s"Open $url in your browser to administer the application")
         case Good(result) if result.message.nonEmpty =>
-          sys.error(s"Unable to restart application $applicationId: ${result.message}")
+          sys.error(s"Unable to restart application $applicationId: ${result.message.get}")
         case Good(result) =>
           sys.error(s"Unable to restart application $applicationId")
         case Bad(e) =>
