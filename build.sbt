@@ -18,6 +18,7 @@ val CommonSettings = BaseSettings ++ Seq(
 
 val PluginSettings = CommonSettings ++ scriptedSettings ++ Seq(
   sbtPlugin := true,
+  crossSbtVersions := Seq("0.13.16", "1.0.0-RC3"),
   name := "sbt-" + name.value,
   scriptedLaunchOpts ++= Seq("-Xmx1024M", "-XX:MaxPermSize=256M", "-Dplugin.version=" + version.value),
   scriptedBufferLog := false
