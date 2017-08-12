@@ -18,7 +18,6 @@ val CommonSettings = BaseSettings ++ Seq(
 
 val PluginSettings = CommonSettings ++ scriptedSettings ++ Seq(
   sbtPlugin := true,
-  crossSbtVersions := Seq("0.13.16", "1.0.0-RC3"),
   name := "sbt-" + name.value,
   scriptedLaunchOpts ++= Seq("-Xmx1024M", "-XX:MaxPermSize=256M", "-Dplugin.version=" + version.value),
   scriptedBufferLog := false
@@ -35,6 +34,7 @@ lazy val marathon = (project in file("marathon"))
   .settings(PluginSettings: _*)
   .settings(PluginPublishSettings: _*)
   .settings(
+    crossSbtVersions := Seq("0.13.16", "1.0.0"),
     libraryDependencies ++= Seq(
       "org.slf4j"      % "slf4j-api"        % "1.7.21",
       "org.slf4j"      % "slf4j-jdk14"      % "1.7.21" % "test",
@@ -55,9 +55,24 @@ lazy val templating = (project in file("templating"))
   .settings(PluginPublishSettings: _*)
   .settings(
     name := "sbt-marathon-templating",
+    crossSbtVersions := Seq("0.13.16"),
     buildInfoKeys := Seq[BuildInfoKey](version),
     buildInfoPackage := "sbtmarathon",
-    addSbtPlugin("com.typesafe.sbt" % "sbt-twirl" % "1.3.3"),
+    libraryDependencies ++= {
+      val currentSbtVersion = (sbtBinaryVersion in pluginCrossBuild).value
+      Seq(
+        Defaults.sbtPluginExtra(
+          "com.typesafe.sbt" % "sbt-twirl" % "1.3.3",
+          currentSbtVersion,
+          scalaBinaryVersion.value
+        ),
+        Defaults.sbtPluginExtra(
+          (organization in marathon).value % (name in marathon).value % version.value,
+          currentSbtVersion,
+          scalaBinaryVersion.value
+        )
+      )
+    },
     sourceDirectories in (Compile, TwirlKeys.compileTemplates) += {
       (resourceDirectory in Compile).value / "templates"
     },
@@ -72,7 +87,7 @@ lazy val templating = (project in file("templating"))
       (publishLocal.dependsOn(publishLocal in templatingLib)).value
     }
   )
-  .dependsOn(marathon, templatingLib)
+  .dependsOn(templatingLib)
   .enablePlugins(BuildInfoPlugin, SbtTwirl)
 
 lazy val templatingLib = (project in file("templating-lib"))
