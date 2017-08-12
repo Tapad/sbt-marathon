@@ -38,8 +38,8 @@ lazy val marathon = (project in file("marathon"))
       "org.slf4j"      % "slf4j-api"        % "1.7.21",
       "org.slf4j"      % "slf4j-jdk14"      % "1.7.21" % "test",
       "org.scalactic" %% "scalactic"        % ScalacticVersion,
-      "com.twitter"   %% "finagle-core"     % FinagleVersion,
-      "com.twitter"   %% "finagle-http"     % FinagleVersion,
+      "com.twitter"   %% "finagle-core"     % finagleVersion(scalaVersion.value),
+      "com.twitter"   %% "finagle-http"     % finagleVersion(scalaVersion.value),
       "org.json4sbt"  %% "json4sbt-jackson" % Json4sbtVersion
     ),
     publishLocal := {
@@ -56,7 +56,7 @@ lazy val templating = (project in file("templating"))
     name := "sbt-marathon-templating",
     buildInfoKeys := Seq[BuildInfoKey](version),
     buildInfoPackage := "sbtmarathon",
-    addSbtPlugin("com.typesafe.sbt" % "sbt-twirl" % "1.0.3"),
+    addSbtPlugin("com.typesafe.sbt" % "sbt-twirl" % "1.3.3"),
     sourceDirectories in (Compile, TwirlKeys.compileTemplates) += {
       (resourceDirectory in Compile).value / "templates"
     },
@@ -83,7 +83,7 @@ lazy val templatingLib = (project in file("templating-lib"))
       "org.scala-lang"     % "scala-reflect"    % scalaVersion.value,
       "org.slf4j"          % "slf4j-api"        % "1.7.21",
       "org.json4sbt"      %% "json4sbt-jackson" % "3.4.1",
-      "com.typesafe.play" %% "twirl-api"        % "1.1.1" % "provided"
+      "com.typesafe.play" %% "twirl-api"        % "1.3.3" % "provided"
     ),
     parallelExecution in test := false
   )
