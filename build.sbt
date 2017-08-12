@@ -12,7 +12,7 @@ val BaseSettings = Seq(
 val CommonSettings = BaseSettings ++ Seq(
   scalacOptions ++= Seq("-deprecation", "-language:_"),
   libraryDependencies ++= Seq(
-    "org.scalatest" %% "scalatest" % ScalaTestVersion % "test"
+    "org.scalatest" %% "scalatest" % ScalaTestVersion % Test
   )
 )
 
@@ -37,7 +37,7 @@ lazy val marathon = (project in file("marathon"))
     crossSbtVersions := Seq("0.13.16", "1.0.0"),
     libraryDependencies ++= Seq(
       "org.slf4j"      % "slf4j-api"        % "1.7.21",
-      "org.slf4j"      % "slf4j-jdk14"      % "1.7.21" % "test",
+      "org.slf4j"      % "slf4j-jdk14"      % "1.7.21" % Test,
       "org.scalactic" %% "scalactic"        % ScalacticVersion,
       "com.twitter"   %% "finagle-core"     % finagleVersion(scalaVersion.value),
       "com.twitter"   %% "finagle-http"     % finagleVersion(scalaVersion.value),
@@ -99,7 +99,7 @@ lazy val templatingLib = (project in file("templating-lib"))
       "org.scala-lang"     % "scala-reflect"    % scalaVersion.value,
       "org.slf4j"          % "slf4j-api"        % "1.7.21",
       "org.json4sbt"      %% "json4sbt-jackson" % "3.4.1",
-      "com.typesafe.play" %% "twirl-api"        % "1.3.3" % "provided"
+      "com.typesafe.play" %% "twirl-api"        % "1.3.3" % Provided
     ),
     parallelExecution in test := false
   )
