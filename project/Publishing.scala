@@ -21,7 +21,7 @@ object Publishing {
 
   /* `publish` performs a no-op */
   val NoopPublishSettings = Seq(
-    packagedArtifacts in file(".") := Map.empty,
+    packagedArtifacts in RootProject(file(".")) := Map.empty,
     publish := (),
     publishLocal := (),
     publishArtifact := false,
