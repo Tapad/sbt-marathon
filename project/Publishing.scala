@@ -55,18 +55,39 @@ object Publishing {
   )
 
   val ReleaseSettings = Seq(
-    releaseCrossBuild := true,
     releaseProcess := Seq[ReleaseStep](
-      checkSnapshotDependencies,
       inquireVersions,
-      releaseStepCommandAndRemaining("+test"),
       setReleaseVersion,
+      withDiscreteSbtProcess(
+        "root"          -> "^clean",
+        "util"          -> "+test",
+        "util"          -> "+publishLocal",
+        "templatingLib" -> "+test",
+        "marathon"      -> "^test"
+      ),
+      releaseStepCommand("project root"),
       commitReleaseVersion,
       tagRelease,
-      releaseStepCommandAndRemaining("+publish"),
+      withDiscreteSbtProcess(
+        "util"          -> "+publish",
+        "marathon"      -> "^publish",
+        "templatingLib" -> "+publish",
+        "templating"    -> "^publish"
+      ),
       setNextVersion,
       commitNextVersion,
       pushChanges
     )
   )
+
+  private def withDiscreteSbtProcess(commandsByProjectName: (String, String)*) = (state: State) => {
+    commandsByProjectName.foldLeft(state) { case (state, (projectName, command)) =>
+      val result = Process("sbt" :: s";project $projectName" :: command :: Nil).!
+      if (result != 0) {
+        sys.error(s"An error was encountered during the release process ($projectName/$command)")
+      } else {
+        state
+      }
+    }
+  }
 }
