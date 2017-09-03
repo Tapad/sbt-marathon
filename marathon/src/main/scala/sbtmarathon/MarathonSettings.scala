@@ -162,7 +162,7 @@ object MarathonSettings {
   )
 
   def setMarathonServiceUrl = Command.single("marathonSetServiceUrl") { (state, url) =>
-    applySettings(
+    SettingUtils.applySettings(
       state,
       Seq(marathonServiceUrl := url)
     )
@@ -173,20 +173,4 @@ object MarathonSettings {
     .replaceAll("^-+", "")                 // drop leading dashes
     .replaceAll("-+$", "")                 // drop trailing dashes
     .toLowerCase                           // convert to lowercase
-
-  private def applySettings(state: State, settings: Seq[Setting[_]]): State = {
-    val extracted = Project.extract(state)
-    val projectRef = extracted.currentRef
-    val session = Project.session(state)
-    val appendableSettings = Load.transformSettings(
-      Load.projectScope(projectRef),
-      projectRef.build,
-      extracted.rootProject,
-      settings
-    )
-    SessionSettings.reapply(
-      session.appendRaw(appendableSettings),
-      state
-    )
-  }
 }
