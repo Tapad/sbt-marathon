@@ -63,6 +63,7 @@ object Publishing {
         "util"          -> "+test",
         "util"          -> "+publishLocal",
         "templatingLib" -> "+test",
+        "templatingLib" -> "+publishLocal",
         "marathon"      -> "^test"
       ),
       releaseStepCommand("project root"),
