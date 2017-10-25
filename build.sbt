@@ -55,7 +55,7 @@ lazy val templating = (project in file("templating"))
   .settings(PluginPublishSettings: _*)
   .settings(
     name := "sbt-marathon-templating",
-    crossSbtVersions := Seq("0.13.16"),
+    crossSbtVersions := Seq("0.13.16", "1.0.0"),
     buildInfoKeys := Seq[BuildInfoKey](version),
     buildInfoPackage := "sbtmarathon",
     libraryDependencies ++= {
