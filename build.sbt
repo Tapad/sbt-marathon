@@ -62,7 +62,7 @@ lazy val templating = (project in file("templating"))
       val currentSbtVersion = (sbtBinaryVersion in pluginCrossBuild).value
       Seq(
         Defaults.sbtPluginExtra(
-          "com.typesafe.sbt" % "sbt-twirl" % "1.3.3",
+          "com.typesafe.sbt" % "sbt-twirl" % "1.3.12",
           currentSbtVersion,
           scalaBinaryVersion.value
         ),
@@ -99,7 +99,7 @@ lazy val templatingLib = (project in file("templating-lib"))
       "org.scala-lang"     % "scala-reflect"    % scalaVersion.value,
       "org.slf4j"          % "slf4j-api"        % "1.7.21",
       "org.json4sbt"      %% "json4sbt-jackson" % "3.4.1",
-      "com.typesafe.play" %% "twirl-api"        % "1.3.3" % Provided
+      "com.typesafe.play" %% "twirl-api"        % "1.3.12" % Provided
     ),
     parallelExecution in test := false
   )
