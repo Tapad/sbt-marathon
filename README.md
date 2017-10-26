@@ -188,6 +188,8 @@ For more information, refer to the documentation provided by [sbt-docker](https:
 ### Templating
 The [twirl templating engine](https://github.com/playframework/twirl) can be leveraged to help author Marathon requests by using the sbt-marathon-templating plugin.
 
+NOTE: If using sbt 1.0.x, sbt-twirl requires that you use sbt version 1.0.1 or greater due to the `Append` instance backwards compatibility issue addressed in the [release notes](http://www.scala-sbt.org/1.x/docs/sbt-1.0-Release-Notes.html#WatchSource).
+
 Add the following lines to `project/plugins.sbt`.
 
 ```
