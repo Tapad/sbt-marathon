@@ -36,11 +36,12 @@ object TemplatingPlugin extends AutoPlugin {
       val log = streams.value.log
       marathonTemplates.value.map {
         case Template(file, driver) =>
-          log.info(s"Serializing $driver")
+          log.debug(s"Serializing $driver")
           val driverJsonFile = File.createTempFile(s"driver-", ".json")
           val driverJsonString = Serialization.write[TemplateDriver](driver)
           IO.write(file = driverJsonFile, content = driverJsonString)
-          log.info(s"Generating template @ $file with driver: $driver")
+          log.info(s"Evaluating template $file")
+          log.debug(s"Using driver $driver")
           val classRunner = (runner in Compile).value
           val mainClass = "sbtmarathon.TemplateEvaluatorFacade"
           val classpathFiles =
