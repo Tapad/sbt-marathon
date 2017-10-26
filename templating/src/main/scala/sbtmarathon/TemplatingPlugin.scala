@@ -19,6 +19,7 @@ object TemplatingPlugin extends AutoPlugin {
     val TemplatingKeys = sbtmarathon.TemplatingKeys
     val marathonTemplates = TemplatingKeys.marathonTemplates
     val marathonEvaluateTemplates = TemplatingKeys.marathonEvaluateTemplates
+    val marathonTemplateLoggingEnabled = TemplatingKeys.marathonTemplateLoggingEnabled
     implicit def newDriver(a: AnyRef): TemplateDriver = TemplateDriver(a)
   }
 
@@ -63,10 +64,18 @@ object TemplatingPlugin extends AutoPlugin {
     marathonEvaluateTemplates := {
       marathonEvaluateTemplates.dependsOn(compile in (Compile, TwirlKeys.compileTemplates)).value
     },
+    marathonTemplateLoggingEnabled := true,
     clean := {
       clean.dependsOn(clean in Templating).value
     },
-    libraryDependencies += "com.tapad.sbt" %% "marathon-templating-lib" % BuildInfo.version % Templating.name,
+    libraryDependencies += "com.tapad.sbt" %% "marathon-templating-lib" % BuildInfo.version % Templating,
+    libraryDependencies ++= {
+      if (marathonTemplateLoggingEnabled.value) {
+        Seq("org.slf4j" % "slf4j-simple" % "1.7.25" % Templating)
+      } else {
+        Seq.empty
+      }
+    },
     managedClasspath in Templating := {
       val artifactTypes: Set[String] = (classpathTypes in Templating).value
       Classpaths.managedJars(Templating, artifactTypes, update.value)
